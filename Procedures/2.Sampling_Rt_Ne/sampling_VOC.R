@@ -8,7 +8,6 @@ if (!require(dplyr, quietly = T)) install.packages("dplyr")
 library(dplyr)
 if (!require(tidyr, quietly = T)) install.packages("tidyr")
 library(tidyr)
-cols<-c("Omicron"="#db8a8a","Gamma"="#dbd48a","Lambda"="#8fdb8a","Delta"="#8ad3db","Mu"="#a18adb","Alpha"="#db8ac0","darkgrey")
 metadata<-read.csv(file=args[1],sep="\t",header=TRUE)
 nexlist<-readLines(args[2])
 f_d_c<-metadata%>%
