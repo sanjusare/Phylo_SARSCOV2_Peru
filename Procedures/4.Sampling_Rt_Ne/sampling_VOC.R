@@ -1,6 +1,6 @@
 args<-commandArgs(trailingOnly = TRUE)
 Sys.setlocale("LC_TIME", "English")
-if(length(args)>7| length(args)<8){
+if(length(args)>8| length(args)<7){
   print("usage=Rscript sampling_VOC.R [metadata_file] [seqs_list_file] [country] [date_lower_limit] [date_upper_limit] [type_of_sampling] [VOC] [sample_size]")
   break
 }
