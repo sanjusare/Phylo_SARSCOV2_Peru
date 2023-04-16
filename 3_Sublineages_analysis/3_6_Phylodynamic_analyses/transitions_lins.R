@@ -106,6 +106,13 @@ for (df in names(dats_trees_list)) {
         dats_trees_list[[df]][[3]]$Median[dats_trees_list[[df]][[3]]$from_to ==
             i] <- median(d$transitions)
     }
+    all<-dats_trees_list[[df]][[2]]%>%
+      dplyr::group_by(tree)%>%
+      dplyr::summarise(transitions=n())%>%
+      dplyr::ungroup()
+    dats_trees_list[[df]][[3]]$HPD_L_tot <- round(quantile(all$transitions, 0.025), 0)
+    dats_trees_list[[df]][[3]]$HPD_H_tot <- round(quantile(all$transitions, 0.975), 0)
+    dats_trees_list[[df]][[3]]$Median_tot <- median(all$transitions)
 }
 # 6:heatmap of transitions by region####
 medians <- c()
@@ -123,6 +130,15 @@ p_heat_leg <- ggplot(dats_trees_list[[i]][[3]], aes(x = loc2,
 heat_leg <- get_legend(p_heat_leg)
 heat_ps <- list()
 for (i in 1:length(dats_trees_list)) {
+    name1<-paste(paste("SubL1+L2", sapply(strsplit(names(dats_trees_list)[i], "_"), "[", 2), sep = "_"), "/",
+               dats_trees_list[[i]][[3]]$Median_tot[[1]], "/",
+               dats_trees_list[[i]][[3]]$HPD_L_tot[[1]], "-",
+               dats_trees_list[[i]][[3]]$HPD_H_tot[[1]], sep = "")
+    name2<-paste(names(dats_trees_list)[i], "/",
+               dats_trees_list[[i]][[3]]$Median_tot[[1]], "/",
+               dats_trees_list[[i]][[3]]$HPD_L_tot[[1]], "-",
+               dats_trees_list[[i]][[3]]$HPD_H_tot[[1]], sep = "")
+    name<-ifelse(grepl("SubL", names(dats_trees_list)[i]), name1, name2)
     heat_ps[[names(dats_trees_list)[i]]] <- ggplot(dats_trees_list[[i]][[3]],
         aes(x = loc2, y = loc1, fill = Median)) + geom_tile() +
         geom_text(aes(label = paste(HPD_L, "-", HPD_H, sep = ""))) +
@@ -131,9 +147,8 @@ for (i in 1:length(dats_trees_list)) {
             limit = c(min(medians), max(medians))) + theme(legend.position = "none",
         panel.grid = element_blank(), panel.background = element_rect(fill = "lightgrey"),
         axis.title = element_blank(), axis.text.x = element_text(angle = 90,
-            hjust = 0, vjust = 0)) + ggtitle(ifelse(grepl("SubL",
-        names(dats_trees_list)[i]), "SubL1+L2", sapply(strsplit(names(dats_trees_list)[i],
-        "_"), "[", 1)))
+            hjust = 0, vjust = 0)) +
+        ggtitle(name)
 }
 fin_p <- ggarrange(plotlist = c(heat_ps[4], heat_ps[1:3]), ncol = 2,
     nrow = 2, legend.grob = heat_leg, legend = "right") %>%
