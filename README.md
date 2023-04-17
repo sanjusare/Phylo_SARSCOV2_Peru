@@ -4,3 +4,7 @@ This repository describes the procedures to perform the Phylodynamic analysis of
 
 The Data Files generated during this study are available in: https://drive.google.com/drive/folders/14QAWyFPZlhKVz1fyUoqxn6homwez9uIn?usp=sharing
 
+The procedures require R and python.
+
+All the code was tested with R version 4.2.3 and Python 3.9.0
+
