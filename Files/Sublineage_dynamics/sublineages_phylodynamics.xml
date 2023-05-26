@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><beast beautitemplate='Standard' beautistatus='' namespace="beast.core:beast.evolution.alignment:beast.evolution.tree.coalescent:beast.core.util:beast.evolution.nuc:beast.evolution.operators:beast.evolution.sitemodel:beast.evolution.substitutionmodel:beast.evolution.likelihood" required="" version="2.6">
+
+
+    <data
+id="sublineages_phylodynamics"
+spec="Alignment"
+name="alignment">
+                    </data>
+
+
+    
+
+
+    
+
+
+    
+<map name="Uniform" >beast.math.distributions.Uniform</map>
+<map name="Exponential" >beast.math.distributions.Exponential</map>
+<map name="LogNormal" >beast.math.distributions.LogNormalDistributionModel</map>
+<map name="Normal" >beast.math.distributions.Normal</map>
+<map name="Beta" >beast.math.distributions.Beta</map>
+<map name="Gamma" >beast.math.distributions.Gamma</map>
+<map name="LaplaceDistribution" >beast.math.distributions.LaplaceDistribution</map>
+<map name="prior" >beast.math.distributions.Prior</map>
+<map name="InverseGamma" >beast.math.distributions.InverseGamma</map>
+<map name="OneOnX" >beast.math.distributions.OneOnX</map>
+
+
+<run id="mcmc" spec="MCMC" chainLength="100000000">
+    <state id="state" spec="State" storeEvery="5000">
+        <tree id="Tree.t:sublineages_phylodynamics" spec="beast.evolution.tree.Tree" name="stateNode">
+            <trait id="dateTrait.t:sublineages_phylodynamics" spec="beast.evolution.tree.TraitSet" dateFormat="yyyy-M-dd" traitname="date" value="">
+                <taxa id="TaxonSet.sublineages_phylodynamics" spec="TaxonSet">
+                    <alignment idref="sublineages_phylodynamics"/>
+                </taxa>
+            </trait>
+            <taxonset idref="TaxonSet.sublineages_phylodynamics"/>
+        </tree>
+        <stateNode id="rateIndicator.s:location" spec="parameter.BooleanParameter" dimension="10">true</stateNode>
+        <parameter id="relativeGeoRates.s:location" spec="parameter.RealParameter" dimension="10" name="stateNode">1.0</parameter>
+        <parameter id="traitClockRate.c:location" spec="parameter.RealParameter" name="stateNode">1.0</parameter>
+        <parameter id="clockRate.c:sublineages_phylodynamics" spec="parameter.RealParameter" lower="1.0E-4" name="stateNode" upper="0.01">5.5E-4</parameter>
+        <parameter id="gammaShape.s:sublineages_phylodynamics" spec="parameter.RealParameter" name="stateNode">1.0</parameter>
+        <parameter id="freqParameter.s:sublineages_phylodynamics" spec="parameter.RealParameter" dimension="4" lower="0.0" name="stateNode" upper="1.0">0.25</parameter>
+        <parameter id="rateAC.s:sublineages_phylodynamics" spec="parameter.RealParameter" lower="0.0" name="stateNode">1.0</parameter>
+        <parameter id="rateAG.s:sublineages_phylodynamics" spec="parameter.RealParameter" lower="0.0" name="stateNode">1.0</parameter>
+        <parameter id="rateAT.s:sublineages_phylodynamics" spec="parameter.RealParameter" lower="0.0" name="stateNode">1.0</parameter>
+        <parameter id="rateCG.s:sublineages_phylodynamics" spec="parameter.RealParameter" lower="0.0" name="stateNode">1.0</parameter>
+        <parameter id="rateGT.s:sublineages_phylodynamics" spec="parameter.RealParameter" lower="0.0" name="stateNode">1.0</parameter>
+        <parameter id="BICEPSPopSize.t:sublineages_phylodynamics" spec="parameter.RealParameter" lower="0.0" name="stateNode">1.0</parameter>
+    </state>
+
+    <init id="RandomTree.t:sublineages_phylodynamics" spec="beast.evolution.tree.RandomTree" estimate="false" initial="@Tree.t:sublineages_phylodynamics" taxa="@sublineages_phylodynamics">
+        <populationModel id="ConstantPopulation0.t:sublineages_phylodynamics" spec="ConstantPopulation">
+            <parameter id="randomPopSize.t:sublineages_phylodynamics" spec="parameter.RealParameter" name="popSize">1.0</parameter>
+        </populationModel>
+    </init>
+
+    <distribution id="posterior" spec="util.CompoundDistribution">
+        <distribution id="prior" spec="util.CompoundDistribution">
+            <distribution id="BICEPS.t:sublineages_phylodynamics" spec="biceps.BICEPS" linkedMean="true" ploidy="1.0" populationMean="@BICEPSPopSize.t:sublineages_phylodynamics">
+                <parameter id="RealParameter.201" spec="parameter.RealParameter" lower="0.0" name="populationShape" upper="0.0">3.0</parameter>
+                <groupSizes id="BICEPSGroupSizes.t:sublineages_phylodynamics" spec="parameter.IntegerParameter" dimension="10" estimate="false">1</groupSizes>
+                <treeIntervals id="BICEPSTreeIntervals.t:sublineages_phylodynamics" spec="TreeIntervals" tree="@Tree.t:sublineages_phylodynamics"/>
+            </distribution>
+            <prior id="BICEPSPopSizePrior.t:sublineages_phylodynamics" name="distribution" x="@BICEPSPopSize.t:sublineages_phylodynamics">
+                <LogNormal id="LogNormalDistributionModel.28" meanInRealSpace="true" name="distr">
+                    <parameter id="RealParameter.202" spec="parameter.RealParameter" lower="0.0" name="M" upper="0.0">1.0</parameter>
+                    <parameter id="RealParameter.203" spec="parameter.RealParameter" lower="0.0" name="S" upper="0.0">1.0</parameter>
+                </LogNormal>
+            </prior>
+            <prior id="ClockPrior.c:sublineages_phylodynamics" name="distribution" x="@clockRate.c:sublineages_phylodynamics">
+                <Uniform id="Uniform.29" lower="1.0E-4" name="distr" upper="0.01"/>
+            </prior>
+            <prior id="FrequenciesPrior.s:sublineages_phylodynamics" name="distribution" x="@freqParameter.s:sublineages_phylodynamics">
+                <Uniform id="Uniform.32" name="distr"/>
+            </prior>
+            <prior id="GammaShapePrior.s:sublineages_phylodynamics" name="distribution" x="@gammaShape.s:sublineages_phylodynamics">
+                <Exponential id="Exponential.11" name="distr">
+                    <parameter id="RealParameter.177" spec="parameter.RealParameter" estimate="false" name="mean">1.0</parameter>
+                </Exponential>
+            </prior>
+            <prior id="nonZeroRatePrior.s:location" name="distribution">
+                <x id="nonZeroRates.s:location" spec="util.Sum">
+                    <arg idref="rateIndicator.s:location"/>
+                </x>
+                <distr id="Poisson.8" spec="beast.math.distributions.Poisson" offset="4.0">
+                    <parameter id="RealParameter.188" spec="parameter.RealParameter" estimate="false" name="lambda">0.693</parameter>
+                </distr>
+            </prior>
+            <prior id="RateACPrior.s:sublineages_phylodynamics" name="distribution" x="@rateAC.s:sublineages_phylodynamics">
+                <Gamma id="Gamma.27" name="distr">
+                    <parameter id="RealParameter.189" spec="parameter.RealParameter" estimate="false" name="alpha">0.05</parameter>
+                    <parameter id="RealParameter.190" spec="parameter.RealParameter" estimate="false" name="beta">10.0</parameter>
+                </Gamma>
+            </prior>
+            <prior id="RateAGPrior.s:sublineages_phylodynamics" name="distribution" x="@rateAG.s:sublineages_phylodynamics">
+                <Gamma id="Gamma.28" name="distr">
+                    <parameter id="RealParameter.191" spec="parameter.RealParameter" estimate="false" name="alpha">0.05</parameter>
+                    <parameter id="RealParameter.192" spec="parameter.RealParameter" estimate="false" name="beta">20.0</parameter>
+                </Gamma>
+            </prior>
+            <prior id="RateATPrior.s:sublineages_phylodynamics" name="distribution" x="@rateAT.s:sublineages_phylodynamics">
+                <Gamma id="Gamma.29" name="distr">
+                    <parameter id="RealParameter.193" spec="parameter.RealParameter" estimate="false" name="alpha">0.05</parameter>
+                    <parameter id="RealParameter.194" spec="parameter.RealParameter" estimate="false" name="beta">10.0</parameter>
+                </Gamma>
+            </prior>
+            <prior id="RateCGPrior.s:sublineages_phylodynamics" name="distribution" x="@rateCG.s:sublineages_phylodynamics">
+                <Gamma id="Gamma.30" name="distr">
+                    <parameter id="RealParameter.195" spec="parameter.RealParameter" estimate="false" name="alpha">0.05</parameter>
+                    <parameter id="RealParameter.196" spec="parameter.RealParameter" estimate="false" name="beta">10.0</parameter>
+                </Gamma>
+            </prior>
+            <prior id="RateGTPrior.s:sublineages_phylodynamics" name="distribution" x="@rateGT.s:sublineages_phylodynamics">
+                <Gamma id="Gamma.32" name="distr">
+                    <parameter id="RealParameter.199" spec="parameter.RealParameter" estimate="false" name="alpha">0.05</parameter>
+                    <parameter id="RealParameter.200" spec="parameter.RealParameter" estimate="false" name="beta">10.0</parameter>
+                </Gamma>
+            </prior>
+            <prior id="relativeGeoRatesPrior.s:location" name="distribution" x="@relativeGeoRates.s:location">
+                <Gamma id="Gamma.26" name="distr">
+                    <parameter id="RealParameter.186" spec="parameter.RealParameter" estimate="false" name="alpha">1.0</parameter>
+                    <parameter id="RealParameter.187" spec="parameter.RealParameter" estimate="false" name="beta">1.0</parameter>
+                </Gamma>
+            </prior>
+            <prior id="geoclockPrior.c:location" name="distribution" x="@traitClockRate.c:location">
+                <Gamma id="Gamma.25" name="distr">
+                    <parameter id="RealParameter.184" spec="parameter.RealParameter" estimate="false" name="alpha">0.001</parameter>
+                    <parameter id="RealParameter.185" spec="parameter.RealParameter" estimate="false" name="beta">1000.0</parameter>
+                </Gamma>
+            </prior>
+        </distribution>
+        <distribution id="likelihood" spec="util.CompoundDistribution" useThreads="true">
+            <distribution id="treeLikelihood.sublineages_phylodynamics" spec="ThreadedTreeLikelihood" data="@sublineages_phylodynamics" tree="@Tree.t:sublineages_phylodynamics">
+                <siteModel id="SiteModel.s:sublineages_phylodynamics" spec="SiteModel" gammaCategoryCount="4" shape="@gammaShape.s:sublineages_phylodynamics">
+                    <parameter id="mutationRate.s:sublineages_phylodynamics" spec="parameter.RealParameter" estimate="false" name="mutationRate">1.0</parameter>
+                    <parameter id="proportionInvariant.s:sublineages_phylodynamics" spec="parameter.RealParameter" estimate="false" lower="0.0" name="proportionInvariant" upper="1.0">0.0</parameter>
+                    <substModel id="gtr.s:sublineages_phylodynamics" spec="GTR" rateAC="@rateAC.s:sublineages_phylodynamics" rateAG="@rateAG.s:sublineages_phylodynamics" rateAT="@rateAT.s:sublineages_phylodynamics" rateCG="@rateCG.s:sublineages_phylodynamics" rateGT="@rateGT.s:sublineages_phylodynamics">
+                        <parameter id="rateCT.s:sublineages_phylodynamics" spec="parameter.RealParameter" estimate="false" lower="0.0" name="rateCT">1.0</parameter>
+                        <frequencies id="estimatedFreqs.s:sublineages_phylodynamics" spec="Frequencies" frequencies="@freqParameter.s:sublineages_phylodynamics"/>
+                    </substModel>
+                </siteModel>
+                <branchRateModel id="StrictClock.c:sublineages_phylodynamics" spec="beast.evolution.branchratemodel.StrictClockModel" clock.rate="@clockRate.c:sublineages_phylodynamics"/>
+            </distribution>
+            <distribution id="traitedtreeLikelihood.location" spec="AncestralStateTreeLikelihood" tag="location" tree="@Tree.t:sublineages_phylodynamics">
+                <data
+id="location"
+spec="AlignmentFromTrait">
+                    <traitSet id="traitSet.location" spec="beast.evolution.tree.TraitSet" taxa="@TaxonSet.sublineages_phylodynamics" traitname="discrete">EPI_ISL_5681696|SouthAmerica|Peru|2021-05-07=north,
+EPI_ISL_3023495|SouthAmerica|Peru|2021-02-18=south-east,
+EPI_ISL_3020252|SouthAmerica|Peru|2021-06-05=south-east,
+EPI_ISL_3376291|SouthAmerica|Peru|2021-03-23=north,
+EPI_ISL_5499380|SouthAmerica|Peru|2021-06-13=center,
+EPI_ISL_7961388|SouthAmerica|Peru|2021-04-17=south,
+EPI_ISL_2536721|SouthAmerica|Peru|2021-03-30=center,
+EPI_ISL_3376310|SouthAmerica|Peru|2021-03-10=north,
+EPI_ISL_3023622|SouthAmerica|Peru|2021-03-02=center,
+EPI_ISL_3023628|SouthAmerica|Peru|2021-03-04=center,
+EPI_ISL_3376365|SouthAmerica|Peru|2021-03-08=center,
+EPI_ISL_3940367|SouthAmerica|Peru|2021-06-26=north,
+EPI_ISL_2844755|SouthAmerica|Peru|2021-05-01=center,
+EPI_ISL_5499226|SouthAmerica|Peru|2021-05-12=mid-east,
+EPI_ISL_3672606|SouthAmerica|Peru|2021-05-12=north,
+EPI_ISL_3376217|SouthAmerica|Peru|2021-03-25=north,
+EPI_ISL_3537695|SouthAmerica|Peru|2021-05-28=south,
+EPI_ISL_3376344|SouthAmerica|Peru|2021-05-01=center,
+EPI_ISL_2921465|SouthAmerica|Peru|2021-05-04=center,
+EPI_ISL_3546968|SouthAmerica|Peru|2021-06-04=center,
+EPI_ISL_2921404|SouthAmerica|Peru|2021-04-17=center,
+EPI_ISL_8889831|SouthAmerica|Peru|2021-03-23=center,
+EPI_ISL_3023391|SouthAmerica|Peru|2021-03-20=mid-east,
+EPI_ISL_3537597|SouthAmerica|Peru|2021-05-14=south,
+EPI_ISL_3023380|SouthAmerica|Peru|2021-03-09=mid-east,
+EPI_ISL_3376283|SouthAmerica|Peru|2021-03-02=center,
+EPI_ISL_2844694|SouthAmerica|Peru|2021-04-21=south,
+EPI_ISL_3376290|SouthAmerica|Peru|2021-03-09=north,
+EPI_ISL_4036671|SouthAmerica|Peru|2021-07-01=south-east,
+EPI_ISL_3023486|SouthAmerica|Peru|2021-04-15=south-east,
+EPI_ISL_3826876|SouthAmerica|Peru|2021-06-19=south-east,
+EPI_ISL_3376318|SouthAmerica|Peru|2021-03-08=center,
+EPI_ISL_3401529|SouthAmerica|Peru|2021-04-21=north,
+EPI_ISL_3537583|SouthAmerica|Peru|2021-04-28=north,
+EPI_ISL_3547006|SouthAmerica|Peru|2021-05-17=center,
+EPI_ISL_3707426|SouthAmerica|Peru|2021-03-24=center,
+EPI_ISL_3707432|SouthAmerica|Peru|2021-03-08=south,
+EPI_ISL_2921515|SouthAmerica|Peru|2021-03-30=north,
+EPI_ISL_3023596|SouthAmerica|Peru|2021-04-13=mid-east,
+EPI_ISL_8889838|SouthAmerica|Peru|2021-04-06=center,
+EPI_ISL_8889989|SouthAmerica|Peru|2021-04-20=center,
+EPI_ISL_3707385|SouthAmerica|Peru|2021-02-08=south-east,
+EPI_ISL_3376252|SouthAmerica|Peru|2021-03-08=center,
+EPI_ISL_1629802|SouthAmerica|Peru|2021-03-08=center,
+EPI_ISL_2536738|SouthAmerica|Peru|2021-04-28=center,
+EPI_ISL_8889868|SouthAmerica|Peru|2021-04-20=center,
+EPI_ISL_5681729|SouthAmerica|Peru|2021-04-27=north,
+EPI_ISL_3376199|SouthAmerica|Peru|2021-04-19=mid-east,
+EPI_ISL_2921337|SouthAmerica|Peru|2021-04-11=south-east,
+EPI_ISL_2921299|SouthAmerica|Peru|2021-04-06=center,
+EPI_ISL_3020229|SouthAmerica|Peru|2021-05-18=center,
+EPI_ISL_5498976|SouthAmerica|Peru|2021-06-03=south,
+EPI_ISL_3547019|SouthAmerica|Peru|2021-05-07=center,
+EPI_ISL_5934951|SouthAmerica|Peru|2021-04-22=center,
+EPI_ISL_2536722|SouthAmerica|Peru|2021-04-12=center,
+EPI_ISL_8889862|SouthAmerica|Peru|2021-03-29=center,
+EPI_ISL_2921403|SouthAmerica|Peru|2021-04-05=center,
+EPI_ISL_5499277|SouthAmerica|Peru|2021-05-17=center,
+EPI_ISL_3672598|SouthAmerica|Peru|2021-05-24=north,
+EPI_ISL_3376232|SouthAmerica|Peru|2021-03-19=north,
+EPI_ISL_8889872|SouthAmerica|Peru|2021-03-24=center,
+EPI_ISL_5764056|SouthAmerica|Peru|2021-06-15=north,
+EPI_ISL_2921532|SouthAmerica|Peru|2021-04-08=north,
+EPI_ISL_5764474|SouthAmerica|Peru|2021-05-03=north,
+EPI_ISL_3672604|SouthAmerica|Peru|2021-05-26=north,
+EPI_ISL_3376220|SouthAmerica|Peru|2021-03-15=south-east,
+EPI_ISL_8889826|SouthAmerica|Peru|2021-03-17=center,
+EPI_ISL_2921367|SouthAmerica|Peru|2021-05-06=center,
+EPI_ISL_2536801|SouthAmerica|Peru|2021-04-12=center,
+EPI_ISL_2921509|SouthAmerica|Peru|2021-04-13=north,
+EPI_ISL_8889790|SouthAmerica|Peru|2021-02-15=center,
+EPI_ISL_1629792|SouthAmerica|Peru|2021-02-13=center,
+EPI_ISL_5934942|SouthAmerica|Peru|2021-02-22=center,
+EPI_ISL_3707392|SouthAmerica|Peru|2021-03-15=center,
+EPI_ISL_3672582|SouthAmerica|Peru|2021-05-15=south-east,
+EPI_ISL_3376305|SouthAmerica|Peru|2021-03-26=center,
+EPI_ISL_5764195|SouthAmerica|Peru|2021-06-27=center,
+EPI_ISL_3023499|SouthAmerica|Peru|2021-02-24=south-east,
+EPI_ISL_1629801|SouthAmerica|Peru|2021-02-26=center,
+EPI_ISL_8889785|SouthAmerica|Peru|2021-01-14=center,
+EPI_ISL_3826934|SouthAmerica|Peru|2021-07-04=center,
+EPI_ISL_3023497|SouthAmerica|Peru|2021-02-04=south-east,
+EPI_ISL_3023442|SouthAmerica|Peru|2021-03-05=center,
+EPI_ISL_5681990|SouthAmerica|Peru|2021-05-17=north,
+EPI_ISL_3023644|SouthAmerica|Peru|2021-03-05=center,
+EPI_ISL_3376311|SouthAmerica|Peru|2021-03-01=north,
+EPI_ISL_3020267|SouthAmerica|Peru|2021-05-29=south-east,
+EPI_ISL_8889789|SouthAmerica|Peru|2021-02-03=center,
+EPI_ISL_3023447|SouthAmerica|Peru|2021-03-08=center,
+EPI_ISL_4772246|SouthAmerica|Peru|2021-03-25=south-east,
+EPI_ISL_2844727|SouthAmerica|Peru|2021-04-01=center,
+EPI_ISL_3023482|SouthAmerica|Peru|2021-04-27=south-east,
+EPI_ISL_3707408|SouthAmerica|Peru|2021-03-15=center,
+EPI_ISL_3401434|SouthAmerica|Peru|2021-05-21=south,
+EPI_ISL_3023570|SouthAmerica|Peru|2021-02-27=north,
+EPI_ISL_3020238|SouthAmerica|Peru|2021-05-19=south-east,
+EPI_ISL_3537593|SouthAmerica|Peru|2021-04-28=south,
+EPI_ISL_8889867|SouthAmerica|Peru|2021-04-13=center,
+EPI_ISL_3023492|SouthAmerica|Peru|2021-04-23=south-east,
+EPI_ISL_1629796|SouthAmerica|Peru|2021-02-13=center,
+EPI_ISL_4080245|SouthAmerica|Peru|2021-07-10=north,
+EPI_ISL_5934939|SouthAmerica|Peru|2021-02-11=center,
+EPI_ISL_8889840|SouthAmerica|Peru|2021-04-20=center,
+EPI_ISL_2536888|SouthAmerica|Peru|2021-04-09=north,
+EPI_ISL_8889865|SouthAmerica|Peru|2021-04-06=center,
+EPI_ISL_3987826|SouthAmerica|Peru|2021-07-17=center,
+EPI_ISL_8889987|SouthAmerica|Peru|2021-02-08=center,
+EPI_ISL_3023496|SouthAmerica|Peru|2021-03-06=south-east,
+EPI_ISL_5681806|SouthAmerica|Peru|2021-06-03=north,
+EPI_ISL_3376339|SouthAmerica|Peru|2021-03-11=south-east,
+EPI_ISL_8889786|SouthAmerica|Peru|2021-01-28=center,
+EPI_ISL_3707405|SouthAmerica|Peru|2021-03-15=center,
+EPI_ISL_5499250|SouthAmerica|Peru|2021-05-13=center,
+EPI_ISL_1629795|SouthAmerica|Peru|2021-03-01=center,
+EPI_ISL_2921390|SouthAmerica|Peru|2021-03-31=south,
+EPI_ISL_3020228|SouthAmerica|Peru|2021-05-27=center,
+EPI_ISL_2921280|SouthAmerica|Peru|2021-04-03=center,
+EPI_ISL_8889809|SouthAmerica|Peru|2021-01-19=center,
+EPI_ISL_3707411|SouthAmerica|Peru|2021-03-15=center,
+EPI_ISL_2921298|SouthAmerica|Peru|2021-04-13=center,
+EPI_ISL_8889800|SouthAmerica|Peru|2021-02-03=center,
+EPI_ISL_3376255|SouthAmerica|Peru|2021-04-26=mid-east,
+EPI_ISL_8889942|SouthAmerica|Peru|2021-02-26=center,
+EPI_ISL_8889801|SouthAmerica|Peru|2021-02-15=center,
+EPI_ISL_2536846|SouthAmerica|Peru|2021-03-31=south-east,
+EPI_ISL_2921281|SouthAmerica|Peru|2021-04-18=center,
+EPI_ISL_7961426|SouthAmerica|Peru|2021-07-10=south,
+EPI_ISL_8889830|SouthAmerica|Peru|2021-03-23=center,
+EPI_ISL_2921460|SouthAmerica|Peru|2021-04-29=center,
+EPI_ISL_3050652|SouthAmerica|Peru|2021-05-29=center,
+EPI_ISL_8889972|SouthAmerica|Peru|2021-02-15=center,
+EPI_ISL_3826964|SouthAmerica|Peru|2021-06-19=south,
+EPI_ISL_3826857|SouthAmerica|Peru|2021-06-19=center,
+EPI_ISL_8889857|SouthAmerica|Peru|2021-03-23=center,
+EPI_ISL_3826978|SouthAmerica|Peru|2021-07-02=south,
+EPI_ISL_8889788|SouthAmerica|Peru|2021-02-03=center,
+EPI_ISL_8889856|SouthAmerica|Peru|2021-03-18=center,
+EPI_ISL_1629764|SouthAmerica|Peru|2021-01-01=center,
+EPI_ISL_3547016|SouthAmerica|Peru|2021-05-11=center,
+EPI_ISL_3050692|SouthAmerica|Peru|2021-06-06=center,
+EPI_ISL_8889810|SouthAmerica|Peru|2021-01-20=center,
+EPI_ISL_3023404|SouthAmerica|Peru|2021-02-20=north,
+EPI_ISL_3537672|SouthAmerica|Peru|2021-06-09=south,
+EPI_ISL_2921374|SouthAmerica|Peru|2021-05-05=center,
+EPI_ISL_2921516|SouthAmerica|Peru|2021-04-13=north,
+EPI_ISL_8889861|SouthAmerica|Peru|2021-03-30=center,
+EPI_ISL_2921332|SouthAmerica|Peru|2021-04-12=north,
+EPI_ISL_3826873|SouthAmerica|Peru|2021-06-25=south-east,
+EPI_ISL_2536825|SouthAmerica|Peru|2021-04-03=north,
+EPI_ISL_3826899|SouthAmerica|Peru|2021-06-05=north,
+EPI_ISL_2844750|SouthAmerica|Peru|2021-04-08=mid-east,
+EPI_ISL_2844759|SouthAmerica|Peru|2021-04-05=center,
+EPI_ISL_3826826|SouthAmerica|Peru|2021-06-23=south,
+EPI_ISL_3376335|SouthAmerica|Peru|2021-03-21=north,
+EPI_ISL_3670569|SouthAmerica|Peru|2021-06-08=north,
+EPI_ISL_5764632|SouthAmerica|Peru|2021-05-15=north,
+EPI_ISL_5499243|SouthAmerica|Peru|2021-05-21=mid-east,
+EPI_ISL_3537587|SouthAmerica|Peru|2021-05-03=north,
+EPI_ISL_4080214|SouthAmerica|Peru|2021-07-18=south,
+EPI_ISL_3940389|SouthAmerica|Peru|2021-07-09=center,
+EPI_ISL_3023420|SouthAmerica|Peru|2021-02-12=north,
+EPI_ISL_2921267|SouthAmerica|Peru|2021-04-04=mid-east,
+EPI_ISL_7961400|SouthAmerica|Peru|2021-05-07=south,
+EPI_ISL_2536841|SouthAmerica|Peru|2021-04-06=south,
+EPI_ISL_5934952|SouthAmerica|Peru|2021-04-27=center,
+EPI_ISL_8889869|SouthAmerica|Peru|2021-02-18=center,
+EPI_ISL_3672596|SouthAmerica|Peru|2021-05-19=north,
+EPI_ISL_8889958|SouthAmerica|Peru|2021-03-10=center,
+EPI_ISL_5499200|SouthAmerica|Peru|2021-05-08=south-east,
+EPI_ISL_5763971|SouthAmerica|Peru|2021-06-13=south-east,
+EPI_ISL_3547017|SouthAmerica|Peru|2021-05-10=center,
+EPI_ISL_5681657|SouthAmerica|Peru|2021-05-06=mid-east,
+EPI_ISL_8889833|SouthAmerica|Peru|2021-03-29=center,
+EPI_ISL_2921442|SouthAmerica|Peru|2021-04-10=north,
+EPI_ISL_8889792|SouthAmerica|Peru|2021-02-23=center,
+EPI_ISL_5934965|SouthAmerica|Peru|2021-04-11=center,
+EPI_ISL_3401593|SouthAmerica|Peru|2021-03-22=mid-east,
+EPI_ISL_3401533|SouthAmerica|Peru|2021-04-24=north,
+EPI_ISL_3537585|SouthAmerica|Peru|2021-04-28=north,
+EPI_ISL_8889815|SouthAmerica|Peru|2021-02-26=center,
+EPI_ISL_4036699|SouthAmerica|Peru|2021-07-03=north,
+EPI_ISL_8889988|SouthAmerica|Peru|2021-01-29=center</traitSet>
+                    <userDataType id="traitDataType.location" spec="beast.evolution.datatype.UserDataType" codeMap="center=0,mid-east=1,north=2,south=3,south-east=4,? = 0 1 2 3 4 " codelength="-1" states="5"/>
+                </data>
+                <siteModel id="geoSiteModel.s:location" spec="SiteModel" gammaCategoryCount="1">
+                    <parameter id="mutationRate.s:location" spec="parameter.RealParameter" estimate="false" name="mutationRate">1.0</parameter>
+                    <parameter id="gammaShape.s:location" spec="parameter.RealParameter" estimate="false" name="shape">1.0</parameter>
+                    <parameter id="proportionInvariant.s:location" spec="parameter.RealParameter" estimate="false" lower="0.0" name="proportionInvariant" upper="1.0">0.0</parameter>
+                    <substModel id="svs.s:location" spec="SVSGeneralSubstitutionModel" rateIndicator="@rateIndicator.s:location" rates="@relativeGeoRates.s:location">
+                        <frequencies id="traitfreqs.s:location" spec="Frequencies">
+                            <parameter id="traitfrequencies.s:location" spec="parameter.RealParameter" dimension="5" name="frequencies">0.2</parameter>
+                        </frequencies>
+                    </substModel>
+                </siteModel>
+                <branchRateModel id="StrictClockModel.c:location" spec="beast.evolution.branchratemodel.StrictClockModel" clock.rate="@traitClockRate.c:location"/>
+            </distribution>
+        </distribution>
+    </distribution>
+
+    <operator id="georateScaler.s:location" spec="ScaleOperator" parameter="@relativeGeoRates.s:location" scaleAllIndependently="true" scaleFactor="0.99" weight="30.0"/>
+
+    <operator id="indicatorFlip.s:location" spec="BitFlipOperator" parameter="@rateIndicator.s:location" weight="30.0"/>
+
+    <operator id="geoMuScaler.c:location" spec="ScaleOperator" parameter="@traitClockRate.c:location" scaleFactor="0.9" weight="3.0"/>
+
+    <operator id="BSSVSoperator.c:location" spec="BitFlipBSSVSOperator" indicator="@rateIndicator.s:location" mu="@traitClockRate.c:location" weight="30.0"/>
+
+    <operator id="StrictClockRateScaler.c:sublineages_phylodynamics" spec="ScaleOperator" parameter="@clockRate.c:sublineages_phylodynamics" weight="3.0"/>
+
+    <operator id="strictClockUpDownOperator.c:sublineages_phylodynamics" spec="UpDownOperator" scaleFactor="0.75" weight="3.0">
+        <up idref="clockRate.c:sublineages_phylodynamics"/>
+        <down idref="Tree.t:sublineages_phylodynamics"/>
+    </operator>
+
+    <operator id="gammaShapeScaler.s:sublineages_phylodynamics" spec="ScaleOperator" parameter="@gammaShape.s:sublineages_phylodynamics" scaleFactor="0.5" weight="0.1"/>
+
+    <operator id="FrequenciesExchanger.s:sublineages_phylodynamics" spec="DeltaExchangeOperator" delta="0.01" weight="0.1">
+        <parameter idref="freqParameter.s:sublineages_phylodynamics"/>
+    </operator>
+
+    <operator id="RateACScaler.s:sublineages_phylodynamics" spec="ScaleOperator" parameter="@rateAC.s:sublineages_phylodynamics" scaleFactor="0.5" weight="0.1"/>
+
+    <operator id="RateAGScaler.s:sublineages_phylodynamics" spec="ScaleOperator" parameter="@rateAG.s:sublineages_phylodynamics" scaleFactor="0.5" weight="0.1"/>
+
+    <operator id="RateATScaler.s:sublineages_phylodynamics" spec="ScaleOperator" parameter="@rateAT.s:sublineages_phylodynamics" scaleFactor="0.5" weight="0.1"/>
+
+    <operator id="RateCGScaler.s:sublineages_phylodynamics" spec="ScaleOperator" parameter="@rateCG.s:sublineages_phylodynamics" scaleFactor="0.5" weight="0.1"/>
+
+    <operator id="RateGTScaler.s:sublineages_phylodynamics" spec="ScaleOperator" parameter="@rateGT.s:sublineages_phylodynamics" scaleFactor="0.5" weight="0.1"/>
+
+    <operator id="BICEPSEpochTop.t:sublineages_phylodynamics" spec="biceps.operators.EpochFlexOperator" scaleFactor="0.1" tree="@Tree.t:sublineages_phylodynamics" weight="2.0"/>
+
+    <operator id="BICEPSEpochAll.t:sublineages_phylodynamics" spec="biceps.operators.EpochFlexOperator" fromOldestTipOnly="false" scaleFactor="0.1" tree="@Tree.t:sublineages_phylodynamics" weight="2.0"/>
+
+    <operator id="BICEPSTreeFlex.t:sublineages_phylodynamics" spec="biceps.operators.TreeStretchOperator" scaleFactor="0.01" tree="@Tree.t:sublineages_phylodynamics" weight="2.0"/>
+
+    <operator id="BICEPSTreeRootScaler.t:sublineages_phylodynamics" spec="BactrianScaleOperator" rootOnly="true" scaleFactor="0.1" tree="@Tree.t:sublineages_phylodynamics" upper="10.0" weight="3.0"/>
+
+    <operator id="BICEPSUniformOperator.t:sublineages_phylodynamics" spec="BactrianNodeOperator" tree="@Tree.t:sublineages_phylodynamics" weight="30.0"/>
+
+    <operator id="BICEPSSubtreeSlide.t:sublineages_phylodynamics" spec="BactrianSubtreeSlide" tree="@Tree.t:sublineages_phylodynamics" weight="15.0"/>
+
+    <operator id="BICEPSNarrow.t:sublineages_phylodynamics" spec="Exchange" tree="@Tree.t:sublineages_phylodynamics" weight="0.0"/>
+
+    <operator id="BICEPSWide.t:sublineages_phylodynamics" spec="Exchange" isNarrow="false" tree="@Tree.t:sublineages_phylodynamics" weight="3.0"/>
+
+    <operator id="BICEPSWilsonBalding.t:sublineages_phylodynamics" spec="WilsonBalding" tree="@Tree.t:sublineages_phylodynamics" weight="3.0"/>
+
+    <operator id="BICEPSPopSizesScaler.t:sublineages_phylodynamics" spec="BactrianScaleOperator" parameter="@BICEPSPopSize.t:sublineages_phylodynamics" scaleFactor="0.1" upper="10.0" weight="5.0"/>
+
+    <logger id="tracelog" spec="Logger" fileName="$(filebase).log" logEvery="30000" model="@posterior" sanitiseHeaders="true" sort="smart">
+        <log idref="posterior"/>
+        <log idref="likelihood"/>
+        <log idref="prior"/>
+        <log idref="treeLikelihood.sublineages_phylodynamics"/>
+        <log id="TreeHeight.t:sublineages_phylodynamics" spec="beast.evolution.tree.TreeHeightLogger" tree="@Tree.t:sublineages_phylodynamics"/>
+        <log idref="rateIndicator.s:location"/>
+        <log idref="relativeGeoRates.s:location"/>
+        <log idref="traitClockRate.c:location"/>
+        <log id="geoSubstModelLogger.s:location" spec="SVSGeneralSubstitutionModelLogger" dataType="@traitDataType.location" model="@svs.s:location"/>
+        <log idref="clockRate.c:sublineages_phylodynamics"/>
+        <log idref="gammaShape.s:sublineages_phylodynamics"/>
+        <log idref="freqParameter.s:sublineages_phylodynamics"/>
+        <log idref="rateAC.s:sublineages_phylodynamics"/>
+        <log idref="rateAG.s:sublineages_phylodynamics"/>
+        <log idref="rateAT.s:sublineages_phylodynamics"/>
+        <log idref="rateCG.s:sublineages_phylodynamics"/>
+        <log idref="rateGT.s:sublineages_phylodynamics"/>
+        <log idref="BICEPS.t:sublineages_phylodynamics"/>
+        <log idref="BICEPSPopSize.t:sublineages_phylodynamics"/>
+    </logger>
+
+    <logger id="screenlog" spec="Logger" logEvery="1000000">
+        <log idref="posterior"/>
+        <log idref="likelihood"/>
+        <log idref="prior"/>
+    </logger>
+
+    <logger id="treelog.t:sublineages_phylodynamics" spec="Logger" fileName="$(filebase)$(tree).trees" logEvery="30000" mode="tree">
+        <log id="TreeWithMetaDataLogger.t:sublineages_phylodynamics" spec="beast.evolution.tree.TreeWithMetaDataLogger" tree="@Tree.t:sublineages_phylodynamics"/>
+    </logger>
+
+    <logger id="treeWithTraitLogger.location" spec="Logger" fileName="$(filebase)$(tree)_location.trees" logEvery="30000" mode="tree">
+        <log id="TreeWithTraitLogger.1" spec="beast.evolution.tree.TreeWithTraitLogger" tree="@Tree.t:sublineages_phylodynamics">
+            <metadata idref="posterior"/>
+            <metadata idref="traitedtreeLikelihood.location"/>
+        </log>
+    </logger>
+
+    <operatorschedule id="OperatorSchedule" spec="OperatorSchedule"/>
+
+</run>
+
+</beast>

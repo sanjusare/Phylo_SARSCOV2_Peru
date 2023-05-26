@@ -1,0 +1,41 @@
+#databases:
+
+Our World in Data (https://github.com/owid/covid-19-data/tree/master/public/data)
+Plataforma Nacional de Datos Abiertos (https://www.datosabiertos.gob.pe/dataset/casos-positivos-por-covid-19-ministerio-de-salud-minsa)
+GISAID (www.gisaid.org)
+
+
+#softwares:
+
+R v4.2.3
+ViralMSA.py v1.1.30
+Nextclade v2.14.1
+IQ-TREE2 v2.1.2
+Tempest v1.5.3
+BICEPS v1.1.
+BEAST v2.6.7 
+BEAGLE v4.0.0
+Tracer v1.7.2
+TreeAnotator v2.7.4
+R packages:
+ape v5.7-1
+ggtree v3.6.2
+treeio v1.22.0
+dplyr v1.1.1
+lubridate v1.9.2
+ggplot2 v3.4.2
+tidyr v1.3.0
+zoo v1.8-12
+ggpubr v0.6.0
+ggtext v0.1.2
+scales v1.2.1
+ggpmisc v0.5.2
+phytools v1.5-1
+ggthemes v4.2.4
+ggnewscale v0.4.8
+reshape2 v1.4.4
+openxlsx v4.2.5.2
+
+python packages:
+biopython v1.76
+pandas v1.1.3
