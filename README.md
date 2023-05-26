@@ -9,3 +9,4 @@ The procedures require R and python.
 All the code was tested with R version 4.2.3 and Python 3.9.0
 Requiered R and python packages are listed in the file "softwares.list" 
 
+https://zenodo.org/badge/latestdoi/484445996
