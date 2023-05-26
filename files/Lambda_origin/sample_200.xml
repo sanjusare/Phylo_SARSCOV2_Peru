@@ -1,0 +1,468 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><beast beautitemplate='Standard' beautistatus='' namespace="beast.core:beast.evolution.alignment:beast.evolution.tree.coalescent:beast.core.util:beast.evolution.nuc:beast.evolution.operators:beast.evolution.sitemodel:beast.evolution.substitutionmodel:beast.evolution.likelihood" required="" version="2.6">
+
+
+    <data
+id="sample_200"
+spec="Alignment"
+name="alignment">
+
+                    </data>
+
+
+    
+
+
+    
+
+
+    
+<map name="Uniform" >beast.math.distributions.Uniform</map>
+<map name="Exponential" >beast.math.distributions.Exponential</map>
+<map name="LogNormal" >beast.math.distributions.LogNormalDistributionModel</map>
+<map name="Normal" >beast.math.distributions.Normal</map>
+<map name="Beta" >beast.math.distributions.Beta</map>
+<map name="Gamma" >beast.math.distributions.Gamma</map>
+<map name="LaplaceDistribution" >beast.math.distributions.LaplaceDistribution</map>
+<map name="prior" >beast.math.distributions.Prior</map>
+<map name="InverseGamma" >beast.math.distributions.InverseGamma</map>
+<map name="OneOnX" >beast.math.distributions.OneOnX</map>
+
+
+<run id="mcmc" spec="MCMC" chainLength="100000000">
+    <state id="state" spec="State" storeEvery="5000">
+        <tree id="Tree.t:sample_200" spec="beast.evolution.tree.Tree" name="stateNode">
+            <trait id="dateTrait.t:sample_200" spec="beast.evolution.tree.TraitSet" dateFormat="yyyy-M-dd" traitname="date" value="">
+                <taxa id="TaxonSet.sample_200" spec="TaxonSet">
+                    <alignment idref="sample_200"/>
+                </taxa>
+            </trait>
+            <taxonset idref="TaxonSet.sample_200"/>
+        </tree>
+        <stateNode id="rateIndicator.s:location" spec="parameter.BooleanParameter" dimension="3">true</stateNode>
+        <parameter id="relativeGeoRates.s:location" spec="parameter.RealParameter" dimension="3" name="stateNode">1.0</parameter>
+        <parameter id="traitClockRate.c:location" spec="parameter.RealParameter" name="stateNode">1.0</parameter>
+        <parameter id="clockRate.c:sample_200" spec="parameter.RealParameter" lower="1.0E-4" name="stateNode" upper="0.01">5.5E-4</parameter>
+        <parameter id="gammaShape.s:sample_200" spec="parameter.RealParameter" name="stateNode">1.0</parameter>
+        <parameter id="freqParameter.s:sample_200" spec="parameter.RealParameter" dimension="4" lower="0.0" name="stateNode" upper="1.0">0.25</parameter>
+        <parameter id="rateAC.s:sample_200" spec="parameter.RealParameter" lower="0.0" name="stateNode">1.0</parameter>
+        <parameter id="rateAG.s:sample_200" spec="parameter.RealParameter" lower="0.0" name="stateNode">1.0</parameter>
+        <parameter id="rateAT.s:sample_200" spec="parameter.RealParameter" lower="0.0" name="stateNode">1.0</parameter>
+        <parameter id="rateCG.s:sample_200" spec="parameter.RealParameter" lower="0.0" name="stateNode">1.0</parameter>
+        <parameter id="rateGT.s:sample_200" spec="parameter.RealParameter" lower="0.0" name="stateNode">1.0</parameter>
+        <parameter id="BICEPSPopSize.t:sample_200" spec="parameter.RealParameter" lower="0.0" name="stateNode">1.0</parameter>
+    </state>
+
+    <init id="RandomTree.t:sample_200" spec="beast.evolution.tree.RandomTree" estimate="false" initial="@Tree.t:sample_200" taxa="@sample_200">
+        <populationModel id="ConstantPopulation0.t:sample_200" spec="ConstantPopulation">
+            <parameter id="randomPopSize.t:sample_200" spec="parameter.RealParameter" name="popSize">1.0</parameter>
+        </populationModel>
+    </init>
+
+    <distribution id="posterior" spec="util.CompoundDistribution">
+        <distribution id="prior" spec="util.CompoundDistribution">
+            <distribution id="BICEPS.t:sample_200" spec="biceps.BICEPS" linkedMean="true" ploidy="1.0" populationMean="@BICEPSPopSize.t:sample_200">
+                <parameter id="RealParameter.24" spec="parameter.RealParameter" lower="0.0" name="populationShape" upper="0.0">3.0</parameter>
+                <groupSizes id="BICEPSGroupSizes.t:sample_200" spec="parameter.IntegerParameter" dimension="10" estimate="false">1</groupSizes>
+                <treeIntervals id="BICEPSTreeIntervals.t:sample_200" spec="TreeIntervals" tree="@Tree.t:sample_200"/>
+            </distribution>
+            <prior id="BICEPSPopSizePrior.t:sample_200" name="distribution" x="@BICEPSPopSize.t:sample_200">
+                <LogNormal id="LogNormalDistributionModel.1" meanInRealSpace="true" name="distr">
+                    <parameter id="RealParameter.25" spec="parameter.RealParameter" lower="0.0" name="M" upper="0.0">1.0</parameter>
+                    <parameter id="RealParameter.26" spec="parameter.RealParameter" lower="0.0" name="S" upper="0.0">1.0</parameter>
+                </LogNormal>
+            </prior>
+            <prior id="ClockPrior.c:sample_200" name="distribution" x="@clockRate.c:sample_200">
+                <Uniform id="Uniform.0" lower="1.0E-4" name="distr" upper="0.01"/>
+            </prior>
+            <prior id="FrequenciesPrior.s:sample_200" name="distribution" x="@freqParameter.s:sample_200">
+                <Uniform id="Uniform.3" name="distr"/>
+            </prior>
+            <prior id="GammaShapePrior.s:sample_200" name="distribution" x="@gammaShape.s:sample_200">
+                <Exponential id="Exponential.0" name="distr">
+                    <parameter id="RealParameter.0" spec="parameter.RealParameter" estimate="false" name="mean">1.0</parameter>
+                </Exponential>
+            </prior>
+            <prior id="nonZeroRatePrior.s:location" name="distribution">
+                <x id="nonZeroRates.s:location" spec="util.Sum">
+                    <arg idref="rateIndicator.s:location"/>
+                </x>
+                <distr id="Poisson.0" spec="beast.math.distributions.Poisson" offset="2.0">
+                    <parameter id="RealParameter.11" spec="parameter.RealParameter" estimate="false" name="lambda">0.693</parameter>
+                </distr>
+            </prior>
+            <prior id="RateACPrior.s:sample_200" name="distribution" x="@rateAC.s:sample_200">
+                <Gamma id="Gamma.4" name="distr">
+                    <parameter id="RealParameter.12" spec="parameter.RealParameter" estimate="false" name="alpha">0.05</parameter>
+                    <parameter id="RealParameter.13" spec="parameter.RealParameter" estimate="false" name="beta">10.0</parameter>
+                </Gamma>
+            </prior>
+            <prior id="RateAGPrior.s:sample_200" name="distribution" x="@rateAG.s:sample_200">
+                <Gamma id="Gamma.5" name="distr">
+                    <parameter id="RealParameter.14" spec="parameter.RealParameter" estimate="false" name="alpha">0.05</parameter>
+                    <parameter id="RealParameter.15" spec="parameter.RealParameter" estimate="false" name="beta">20.0</parameter>
+                </Gamma>
+            </prior>
+            <prior id="RateATPrior.s:sample_200" name="distribution" x="@rateAT.s:sample_200">
+                <Gamma id="Gamma.6" name="distr">
+                    <parameter id="RealParameter.16" spec="parameter.RealParameter" estimate="false" name="alpha">0.05</parameter>
+                    <parameter id="RealParameter.17" spec="parameter.RealParameter" estimate="false" name="beta">10.0</parameter>
+                </Gamma>
+            </prior>
+            <prior id="RateCGPrior.s:sample_200" name="distribution" x="@rateCG.s:sample_200">
+                <Gamma id="Gamma.7" name="distr">
+                    <parameter id="RealParameter.18" spec="parameter.RealParameter" estimate="false" name="alpha">0.05</parameter>
+                    <parameter id="RealParameter.19" spec="parameter.RealParameter" estimate="false" name="beta">10.0</parameter>
+                </Gamma>
+            </prior>
+            <prior id="RateGTPrior.s:sample_200" name="distribution" x="@rateGT.s:sample_200">
+                <Gamma id="Gamma.9" name="distr">
+                    <parameter id="RealParameter.22" spec="parameter.RealParameter" estimate="false" name="alpha">0.05</parameter>
+                    <parameter id="RealParameter.23" spec="parameter.RealParameter" estimate="false" name="beta">10.0</parameter>
+                </Gamma>
+            </prior>
+            <prior id="relativeGeoRatesPrior.s:location" name="distribution" x="@relativeGeoRates.s:location">
+                <Gamma id="Gamma.3" name="distr">
+                    <parameter id="RealParameter.9" spec="parameter.RealParameter" estimate="false" name="alpha">1.0</parameter>
+                    <parameter id="RealParameter.10" spec="parameter.RealParameter" estimate="false" name="beta">1.0</parameter>
+                </Gamma>
+            </prior>
+            <prior id="geoclockPrior.c:location" name="distribution" x="@traitClockRate.c:location">
+                <Gamma id="Gamma.2" name="distr">
+                    <parameter id="RealParameter.7" spec="parameter.RealParameter" estimate="false" name="alpha">0.001</parameter>
+                    <parameter id="RealParameter.8" spec="parameter.RealParameter" estimate="false" name="beta">1000.0</parameter>
+                </Gamma>
+            </prior>
+        </distribution>
+        <distribution id="likelihood" spec="util.CompoundDistribution" useThreads="true">
+            <distribution id="treeLikelihood.sample_200" spec="ThreadedTreeLikelihood" data="@sample_200" tree="@Tree.t:sample_200">
+                <siteModel id="SiteModel.s:sample_200" spec="SiteModel" gammaCategoryCount="4" shape="@gammaShape.s:sample_200">
+                    <parameter id="mutationRate.s:sample_200" spec="parameter.RealParameter" estimate="false" name="mutationRate">1.0</parameter>
+                    <parameter id="proportionInvariant.s:sample_200" spec="parameter.RealParameter" estimate="false" lower="0.0" name="proportionInvariant" upper="1.0">0.0</parameter>
+                    <substModel id="gtr.s:sample_200" spec="GTR" rateAC="@rateAC.s:sample_200" rateAG="@rateAG.s:sample_200" rateAT="@rateAT.s:sample_200" rateCG="@rateCG.s:sample_200" rateGT="@rateGT.s:sample_200">
+                        <parameter id="rateCT.s:sample_200" spec="parameter.RealParameter" estimate="false" lower="0.0" name="rateCT">1.0</parameter>
+                        <frequencies id="estimatedFreqs.s:sample_200" spec="Frequencies" frequencies="@freqParameter.s:sample_200"/>
+                    </substModel>
+                </siteModel>
+                <branchRateModel id="StrictClock.c:sample_200" spec="beast.evolution.branchratemodel.StrictClockModel" clock.rate="@clockRate.c:sample_200"/>
+            </distribution>
+            <distribution id="traitedtreeLikelihood.location" spec="AncestralStateTreeLikelihood" tag="location" tree="@Tree.t:sample_200">
+                <data
+id="location"
+spec="AlignmentFromTrait">
+                    <traitSet id="traitSet.location" spec="beast.evolution.tree.TraitSet" taxa="@TaxonSet.sample_200" traitname="discrete">EPI_ISL_8889989|SouthAmerica|Peru|2021-04-20=Peru,
+EPI_ISL_8889786|SouthAmerica|Peru|2021-01-28=Peru,
+EPI_ISL_8889789|SouthAmerica|Peru|2021-02-03=Peru,
+EPI_ISL_8889870|SouthAmerica|Peru|2021-03-10=Peru,
+EPI_ISL_8889843|SouthAmerica|Peru|2021-02-26=Peru,
+EPI_ISL_8889903|SouthAmerica|Peru|2021-01-26=Peru,
+EPI_ISL_8889869|SouthAmerica|Peru|2021-02-18=Peru,
+EPI_ISL_8889825|SouthAmerica|Peru|2021-03-17=Peru,
+EPI_ISL_8889817|SouthAmerica|Peru|2021-03-04=Peru,
+EPI_ISL_3149729|SouthAmerica|Argentina|2021-05-28=Argentina,
+EPI_ISL_2663439|SouthAmerica|Chile|2021-05-30=Chile,
+EPI_ISL_5655967|SouthAmerica|Argentina|2021-09-02=Argentina,
+EPI_ISL_5655970|SouthAmerica|Argentina|2021-09-10=Argentina,
+EPI_ISL_1395787|SouthAmerica|Argentina|2021-02-19=Argentina,
+EPI_ISL_4080268|SouthAmerica|Peru|2021-07-30=Peru,
+EPI_ISL_4082186|SouthAmerica|Argentina|2021-05-07=Argentina,
+EPI_ISL_4082231|SouthAmerica|Argentina|2021-05-14=Argentina,
+EPI_ISL_4082348|SouthAmerica|Argentina|2021-05-18=Argentina,
+EPI_ISL_4082376|SouthAmerica|Argentina|2021-05-17=Argentina,
+EPI_ISL_4082407|SouthAmerica|Argentina|2021-05-28=Argentina,
+EPI_ISL_4082411|SouthAmerica|Argentina|2021-05-28=Argentina,
+EPI_ISL_4082456|SouthAmerica|Argentina|2021-05-22=Argentina,
+EPI_ISL_4082461|SouthAmerica|Argentina|2021-05-05=Argentina,
+EPI_ISL_4082491|SouthAmerica|Argentina|2021-05-27=Argentina,
+EPI_ISL_4082516|SouthAmerica|Argentina|2021-06-03=Argentina,
+EPI_ISL_4082519|SouthAmerica|Argentina|2021-06-04=Argentina,
+EPI_ISL_4082523|SouthAmerica|Argentina|2021-06-05=Argentina,
+EPI_ISL_4082590|SouthAmerica|Argentina|2021-06-02=Argentina,
+EPI_ISL_4082660|SouthAmerica|Argentina|2021-05-20=Argentina,
+EPI_ISL_4082697|SouthAmerica|Argentina|2021-06-02=Argentina,
+EPI_ISL_4082707|SouthAmerica|Argentina|2021-05-24=Argentina,
+EPI_ISL_4082719|SouthAmerica|Argentina|2021-06-11=Argentina,
+EPI_ISL_4082821|SouthAmerica|Argentina|2021-06-16=Argentina,
+EPI_ISL_4082829|SouthAmerica|Argentina|2021-06-08=Argentina,
+EPI_ISL_4082831|SouthAmerica|Argentina|2021-06-09=Argentina,
+EPI_ISL_4082904|SouthAmerica|Argentina|2021-06-14=Argentina,
+EPI_ISL_4082987|SouthAmerica|Argentina|2021-06-26=Argentina,
+EPI_ISL_4083000|SouthAmerica|Argentina|2021-06-18=Argentina,
+EPI_ISL_4083083|SouthAmerica|Argentina|2021-07-03=Argentina,
+EPI_ISL_4083191|SouthAmerica|Argentina|2021-05-22=Argentina,
+EPI_ISL_4083222|SouthAmerica|Argentina|2021-06-23=Argentina,
+EPI_ISL_4083288|SouthAmerica|Argentina|2021-06-29=Argentina,
+EPI_ISL_4083366|SouthAmerica|Argentina|2021-03-01=Argentina,
+EPI_ISL_4083413|SouthAmerica|Argentina|2021-07-07=Argentina,
+EPI_ISL_4083521|SouthAmerica|Argentina|2021-07-22=Argentina,
+EPI_ISL_4083523|SouthAmerica|Argentina|2021-07-09=Argentina,
+EPI_ISL_4083525|SouthAmerica|Argentina|2021-07-12=Argentina,
+EPI_ISL_5158420|SouthAmerica|Argentina|2021-06-07=Argentina,
+EPI_ISL_5158454|SouthAmerica|Argentina|2021-07-12=Argentina,
+EPI_ISL_5158465|SouthAmerica|Argentina|2021-07-08=Argentina,
+EPI_ISL_5158617|SouthAmerica|Argentina|2021-07-26=Argentina,
+EPI_ISL_5158634|SouthAmerica|Argentina|2021-07-23=Argentina,
+EPI_ISL_5158726|SouthAmerica|Argentina|2021-07-27=Argentina,
+EPI_ISL_5158815|SouthAmerica|Argentina|2021-07-18=Argentina,
+EPI_ISL_5158993|SouthAmerica|Argentina|2021-08-10=Argentina,
+EPI_ISL_5159206|SouthAmerica|Argentina|2021-08-25=Argentina,
+EPI_ISL_2543521|SouthAmerica|Chile|2021-05-23=Chile,
+EPI_ISL_3376215|SouthAmerica|Peru|2021-03-26=Peru,
+EPI_ISL_3376274|SouthAmerica|Peru|2021-03-02=Peru,
+EPI_ISL_3376279|SouthAmerica|Peru|2021-03-24=Peru,
+EPI_ISL_3376298|SouthAmerica|Peru|2021-03-11=Peru,
+EPI_ISL_3376325|SouthAmerica|Peru|2021-05-05=Peru,
+EPI_ISL_3376347|SouthAmerica|Peru|2021-02-25=Peru,
+EPI_ISL_3376354|SouthAmerica|Peru|2021-03-22=Peru,
+EPI_ISL_3401454|SouthAmerica|Peru|2021-05-01=Peru,
+EPI_ISL_3401498|SouthAmerica|Peru|2021-05-17=Peru,
+EPI_ISL_3401611|SouthAmerica|Peru|2021-02-12=Peru,
+EPI_ISL_3401613|SouthAmerica|Peru|2021-02-15=Peru,
+EPI_ISL_7955483|SouthAmerica|Argentina|2021-02-06=Argentina,
+EPI_ISL_7956482|SouthAmerica|Argentina|2021-04-16=Argentina,
+EPI_ISL_2508592|SouthAmerica|Chile|2021-05-10=Chile,
+EPI_ISL_4082982|SouthAmerica|Argentina|2021-06-20=Argentina,
+EPI_ISL_4083227|SouthAmerica|Argentina|2021-06-26=Argentina,
+EPI_ISL_1300520|SouthAmerica|Chile|2021-02-09=Chile,
+EPI_ISL_4173281|SouthAmerica|Peru|2021-08-06=Peru,
+EPI_ISL_2536728|SouthAmerica|Peru|2021-04-14=Peru,
+EPI_ISL_2536747|SouthAmerica|Peru|2021-04-28=Peru,
+EPI_ISL_2536755|SouthAmerica|Peru|2021-04-16=Peru,
+EPI_ISL_2536794|SouthAmerica|Peru|2021-05-01=Peru,
+EPI_ISL_2536816|SouthAmerica|Peru|2021-04-02=Peru,
+EPI_ISL_2536819|SouthAmerica|Peru|2021-04-05=Peru,
+EPI_ISL_2536862|SouthAmerica|Peru|2021-03-29=Peru,
+EPI_ISL_2536863|SouthAmerica|Peru|2021-03-30=Peru,
+EPI_ISL_2536866|SouthAmerica|Peru|2021-04-13=Peru,
+EPI_ISL_2536869|SouthAmerica|Peru|2021-04-13=Peru,
+EPI_ISL_2543556|SouthAmerica|Chile|2021-05-23=Chile,
+EPI_ISL_3537578|SouthAmerica|Peru|2021-05-12=Peru,
+EPI_ISL_3537591|SouthAmerica|Peru|2021-04-21=Peru,
+EPI_ISL_3537690|SouthAmerica|Peru|2021-06-04=Peru,
+EPI_ISL_3546988|SouthAmerica|Peru|2021-05-24=Peru,
+EPI_ISL_3547027|SouthAmerica|Peru|2021-05-24=Peru,
+EPI_ISL_3547029|SouthAmerica|Peru|2021-06-05=Peru,
+EPI_ISL_1111285|SouthAmerica|Peru|2021-01-18=Peru,
+EPI_ISL_1111317|SouthAmerica|Peru|2021-01-17=Peru,
+EPI_ISL_1321477|SouthAmerica|Chile|2021-02-16=Chile,
+EPI_ISL_1321485|SouthAmerica|Chile|2021-03-02=Chile,
+EPI_ISL_1321488|SouthAmerica|Chile|2021-03-09=Chile,
+EPI_ISL_2271696|SouthAmerica|Argentina|2021-05-12=Argentina,
+EPI_ISL_2557273|SouthAmerica|Chile|2021-05-24=Chile,
+EPI_ISL_2728547|SouthAmerica|Chile|2021-04-12=Chile,
+EPI_ISL_2728592|SouthAmerica|Chile|2021-02-24=Chile,
+EPI_ISL_2756131|SouthAmerica|Chile|2021-06-13=Chile,
+EPI_ISL_2756135|SouthAmerica|Chile|2021-06-12=Chile,
+EPI_ISL_1470443|SouthAmerica|Chile|2021-03-18=Chile,
+EPI_ISL_1534598|SouthAmerica|Chile|2021-03-30=Chile,
+EPI_ISL_1629801|SouthAmerica|Peru|2021-02-26=Peru,
+EPI_ISL_1633369|SouthAmerica|Chile|2021-04-06=Chile,
+EPI_ISL_1633505|SouthAmerica|Chile|2021-04-01=Chile,
+EPI_ISL_1633520|SouthAmerica|Chile|2021-04-05=Chile,
+EPI_ISL_2007541|SouthAmerica|Argentina|2021-03-15=Argentina,
+EPI_ISL_2007542|SouthAmerica|Argentina|2021-03-22=Argentina,
+EPI_ISL_2009249|SouthAmerica|Chile|2021-04-14=Chile,
+EPI_ISL_2009582|SouthAmerica|Chile|2021-04-25=Chile,
+EPI_ISL_3670605|SouthAmerica|Peru|2021-06-14=Peru,
+EPI_ISL_3670628|SouthAmerica|Peru|2021-06-27=Peru,
+EPI_ISL_3672556|SouthAmerica|Peru|2021-04-28=Peru,
+EPI_ISL_3672562|SouthAmerica|Peru|2021-05-19=Peru,
+EPI_ISL_3672602|SouthAmerica|Peru|2021-05-25=Peru,
+EPI_ISL_2104813|SouthAmerica|Argentina|2021-01-29=Argentina,
+EPI_ISL_3696163|SouthAmerica|Peru|2021-03-26=Peru,
+EPI_ISL_2135258|SouthAmerica|Argentina|2021-03-08=Argentina,
+EPI_ISL_2136047|SouthAmerica|Argentina|2021-04-08=Argentina,
+EPI_ISL_2136056|SouthAmerica|Argentina|2021-04-12=Argentina,
+EPI_ISL_3707385|SouthAmerica|Peru|2021-02-08=Peru,
+EPI_ISL_3707403|SouthAmerica|Peru|2021-03-15=Peru,
+EPI_ISL_3707405|SouthAmerica|Peru|2021-03-15=Peru,
+EPI_ISL_3707433|SouthAmerica|Peru|2021-05-01=Peru,
+EPI_ISL_2158809|SouthAmerica|Argentina|2021-04-21=Argentina,
+EPI_ISL_2271707|SouthAmerica|Argentina|2021-05-12=Argentina,
+EPI_ISL_2391025|SouthAmerica|Chile|2021-04-25=Chile,
+EPI_ISL_2391035|SouthAmerica|Chile|2021-04-26=Chile,
+EPI_ISL_2391338|SouthAmerica|Chile|2021-05-10=Chile,
+EPI_ISL_2391363|SouthAmerica|Chile|2021-01-21=Chile,
+EPI_ISL_2391364|SouthAmerica|Chile|2021-01-26=Chile,
+EPI_ISL_2391378|SouthAmerica|Chile|2021-03-26=Chile,
+EPI_ISL_2391447|SouthAmerica|Chile|2021-05-04=Chile,
+EPI_ISL_2844694|SouthAmerica|Peru|2021-04-21=Peru,
+EPI_ISL_2844705|SouthAmerica|Peru|2021-04-07=Peru,
+EPI_ISL_2844715|SouthAmerica|Peru|2021-04-21=Peru,
+EPI_ISL_2844731|SouthAmerica|Peru|2021-04-02=Peru,
+EPI_ISL_2844774|SouthAmerica|Peru|2021-04-03=Peru,
+EPI_ISL_2854112|SouthAmerica|Chile|2021-05-02=Chile,
+EPI_ISL_2854122|SouthAmerica|Chile|2021-05-03=Chile,
+EPI_ISL_2892695|SouthAmerica|Chile|2021-06-21=Chile,
+EPI_ISL_2892958|SouthAmerica|Chile|2021-06-16=Chile,
+EPI_ISL_2921307|SouthAmerica|Peru|2021-04-08=Peru,
+EPI_ISL_2921344|SouthAmerica|Peru|2021-04-19=Peru,
+EPI_ISL_2921473|SouthAmerica|Peru|2021-05-04=Peru,
+EPI_ISL_2921497|SouthAmerica|Peru|2021-04-17=Peru,
+EPI_ISL_2921503|SouthAmerica|Peru|2021-04-05=Peru,
+EPI_ISL_2921512|SouthAmerica|Peru|2021-04-13=Peru,
+EPI_ISL_2921526|SouthAmerica|Peru|2021-04-07=Peru,
+EPI_ISL_2921530|SouthAmerica|Peru|2021-04-07=Peru,
+EPI_ISL_3020167|SouthAmerica|Peru|2021-03-31=Peru,
+EPI_ISL_3020186|SouthAmerica|Peru|2021-02-01=Peru,
+EPI_ISL_3020220|SouthAmerica|Peru|2021-02-10=Peru,
+EPI_ISL_3023391|SouthAmerica|Peru|2021-03-20=Peru,
+EPI_ISL_3023404|SouthAmerica|Peru|2021-02-20=Peru,
+EPI_ISL_3023475|SouthAmerica|Peru|2021-03-17=Peru,
+EPI_ISL_3023537|SouthAmerica|Peru|2021-03-10=Peru,
+EPI_ISL_3023583|SouthAmerica|Peru|2021-03-01=Peru,
+EPI_ISL_3033039|SouthAmerica|Argentina|2021-04-21=Argentina,
+EPI_ISL_5499169|SouthAmerica|Peru|2021-05-03=Peru,
+EPI_ISL_3860413|SouthAmerica|Argentina|2021-04-14=Argentina,
+EPI_ISL_5499507|SouthAmerica|Peru|2021-06-14=Peru,
+EPI_ISL_3133687|SouthAmerica|Chile|2021-06-02=Chile,
+EPI_ISL_3183946|SouthAmerica|Argentina|2021-05-12=Argentina,
+EPI_ISL_2158708|SouthAmerica|Argentina|2021-05-06=Argentina,
+EPI_ISL_2158702|SouthAmerica|Argentina|2021-04-22=Argentina,
+EPI_ISL_2158762|SouthAmerica|Argentina|2021-05-02=Argentina,
+EPI_ISL_2158820|SouthAmerica|Argentina|2021-04-28=Argentina,
+EPI_ISL_4405030|SouthAmerica|Argentina|2021-04-05=Argentina,
+EPI_ISL_4405146|SouthAmerica|Argentina|2021-06-12=Argentina,
+EPI_ISL_4405172|SouthAmerica|Argentina|2021-04-27=Argentina,
+EPI_ISL_4405302|SouthAmerica|Argentina|2021-05-24=Argentina,
+EPI_ISL_4405425|SouthAmerica|Argentina|2021-04-03=Argentina,
+EPI_ISL_3940331|SouthAmerica|Peru|2021-06-07=Peru,
+EPI_ISL_3987788|SouthAmerica|Peru|2021-06-22=Peru,
+EPI_ISL_3987824|SouthAmerica|Peru|2021-07-20=Peru,
+EPI_ISL_4036602|SouthAmerica|Peru|2021-07-09=Peru,
+EPI_ISL_4036694|SouthAmerica|Peru|2021-07-14=Peru,
+EPI_ISL_6694430|SouthAmerica|Argentina|2021-08-15=Argentina,
+EPI_ISL_5681990|SouthAmerica|Peru|2021-05-17=Peru,
+EPI_ISL_6694403|SouthAmerica|Argentina|2021-08-03=Argentina,
+EPI_ISL_6694440|SouthAmerica|Argentina|2021-06-28=Argentina,
+EPI_ISL_6694653|SouthAmerica|Argentina|2021-08-19=Argentina,
+EPI_ISL_6694868|SouthAmerica|Argentina|2021-08-05=Argentina,
+EPI_ISL_5764449|SouthAmerica|Peru|2021-06-10=Peru,
+EPI_ISL_5764467|SouthAmerica|Peru|2021-05-07=Peru,
+EPI_ISL_5764506|SouthAmerica|Peru|2021-05-10=Peru,
+EPI_ISL_5764513|SouthAmerica|Peru|2021-05-10=Peru,
+EPI_ISL_5764549|SouthAmerica|Peru|2021-05-10=Peru,
+EPI_ISL_5764694|SouthAmerica|Peru|2021-05-31=Peru,
+EPI_ISL_2930483|SouthAmerica|Chile|2021-06-29=Chile,
+EPI_ISL_3401502|SouthAmerica|Peru|2021-05-17=Peru,
+EPI_ISL_4291308|SouthAmerica|Argentina|2021-01-20=Argentina,
+EPI_ISL_3376252|SouthAmerica|Peru|2021-03-08=Peru,
+EPI_ISL_3376303|SouthAmerica|Peru|2021-04-25=Peru,
+EPI_ISL_3376348|SouthAmerica|Peru|2021-03-24=Peru,
+EPI_ISL_3133685|SouthAmerica|Chile|2021-06-02=Chile,
+EPI_ISL_1470536|SouthAmerica|Chile|2021-03-28=Chile,
+EPI_ISL_3260103|SouthAmerica|Argentina|2021-06-25=Argentina,
+EPI_ISL_3826915|SouthAmerica|Peru|2021-07-03=Peru,
+EPI_ISL_8689078|SouthAmerica|Argentina|2021-07-01=Argentina,
+EPI_ISL_8689239|SouthAmerica|Argentina|2021-07-20=Argentina</traitSet>
+                    <userDataType id="traitDataType.location" spec="beast.evolution.datatype.UserDataType" codeMap="Argentina=0,Chile=1,Peru=2,? = 0 1 2 " codelength="-1" states="3"/>
+                </data>
+                <siteModel id="geoSiteModel.s:location" spec="SiteModel" gammaCategoryCount="1">
+                    <parameter id="mutationRate.s:location" spec="parameter.RealParameter" estimate="false" name="mutationRate">1.0</parameter>
+                    <parameter id="gammaShape.s:location" spec="parameter.RealParameter" estimate="false" name="shape">1.0</parameter>
+                    <parameter id="proportionInvariant.s:location" spec="parameter.RealParameter" estimate="false" lower="0.0" name="proportionInvariant" upper="1.0">0.0</parameter>
+                    <substModel id="svs.s:location" spec="SVSGeneralSubstitutionModel" rateIndicator="@rateIndicator.s:location" rates="@relativeGeoRates.s:location">
+                        <frequencies id="traitfreqs.s:location" spec="Frequencies">
+                            <parameter id="traitfrequencies.s:location" spec="parameter.RealParameter" dimension="3" name="frequencies">0.3333333333333333</parameter>
+                        </frequencies>
+                    </substModel>
+                </siteModel>
+                <branchRateModel id="StrictClockModel.c:location" spec="beast.evolution.branchratemodel.StrictClockModel" clock.rate="@traitClockRate.c:location"/>
+            </distribution>
+        </distribution>
+    </distribution>
+
+    <operator id="georateScaler.s:location" spec="ScaleOperator" parameter="@relativeGeoRates.s:location" scaleAllIndependently="true" scaleFactor="0.99" weight="30.0"/>
+
+    <operator id="indicatorFlip.s:location" spec="BitFlipOperator" parameter="@rateIndicator.s:location" weight="30.0"/>
+
+    <operator id="geoMuScaler.c:location" spec="ScaleOperator" parameter="@traitClockRate.c:location" scaleFactor="0.9" weight="3.0"/>
+
+    <operator id="BSSVSoperator.c:location" spec="BitFlipBSSVSOperator" indicator="@rateIndicator.s:location" mu="@traitClockRate.c:location" weight="30.0"/>
+
+    <operator id="StrictClockRateScaler.c:sample_200" spec="ScaleOperator" parameter="@clockRate.c:sample_200" weight="3.0"/>
+
+    <operator id="strictClockUpDownOperator.c:sample_200" spec="UpDownOperator" scaleFactor="0.75" weight="3.0">
+        <up idref="clockRate.c:sample_200"/>
+        <down idref="Tree.t:sample_200"/>
+    </operator>
+
+    <operator id="gammaShapeScaler.s:sample_200" spec="ScaleOperator" parameter="@gammaShape.s:sample_200" scaleFactor="0.5" weight="0.1"/>
+
+    <operator id="FrequenciesExchanger.s:sample_200" spec="DeltaExchangeOperator" delta="0.01" weight="0.1">
+        <parameter idref="freqParameter.s:sample_200"/>
+    </operator>
+
+    <operator id="RateACScaler.s:sample_200" spec="ScaleOperator" parameter="@rateAC.s:sample_200" scaleFactor="0.5" weight="0.1"/>
+
+    <operator id="RateAGScaler.s:sample_200" spec="ScaleOperator" parameter="@rateAG.s:sample_200" scaleFactor="0.5" weight="0.1"/>
+
+    <operator id="RateATScaler.s:sample_200" spec="ScaleOperator" parameter="@rateAT.s:sample_200" scaleFactor="0.5" weight="0.1"/>
+
+    <operator id="RateCGScaler.s:sample_200" spec="ScaleOperator" parameter="@rateCG.s:sample_200" scaleFactor="0.5" weight="0.1"/>
+
+    <operator id="RateGTScaler.s:sample_200" spec="ScaleOperator" parameter="@rateGT.s:sample_200" scaleFactor="0.5" weight="0.1"/>
+
+    <operator id="BICEPSEpochTop.t:sample_200" spec="biceps.operators.EpochFlexOperator" scaleFactor="0.1" tree="@Tree.t:sample_200" weight="2.0"/>
+
+    <operator id="BICEPSEpochAll.t:sample_200" spec="biceps.operators.EpochFlexOperator" fromOldestTipOnly="false" scaleFactor="0.1" tree="@Tree.t:sample_200" weight="2.0"/>
+
+    <operator id="BICEPSTreeFlex.t:sample_200" spec="biceps.operators.TreeStretchOperator" scaleFactor="0.01" tree="@Tree.t:sample_200" weight="2.0"/>
+
+    <operator id="BICEPSTreeRootScaler.t:sample_200" spec="BactrianScaleOperator" rootOnly="true" scaleFactor="0.1" tree="@Tree.t:sample_200" upper="10.0" weight="3.0"/>
+
+    <operator id="BICEPSUniformOperator.t:sample_200" spec="BactrianNodeOperator" tree="@Tree.t:sample_200" weight="30.0"/>
+
+    <operator id="BICEPSSubtreeSlide.t:sample_200" spec="BactrianSubtreeSlide" tree="@Tree.t:sample_200" weight="15.0"/>
+
+    <operator id="BICEPSNarrow.t:sample_200" spec="Exchange" tree="@Tree.t:sample_200" weight="0.0"/>
+
+    <operator id="BICEPSWide.t:sample_200" spec="Exchange" isNarrow="false" tree="@Tree.t:sample_200" weight="3.0"/>
+
+    <operator id="BICEPSWilsonBalding.t:sample_200" spec="WilsonBalding" tree="@Tree.t:sample_200" weight="3.0"/>
+
+    <operator id="BICEPSPopSizesScaler.t:sample_200" spec="BactrianScaleOperator" parameter="@BICEPSPopSize.t:sample_200" scaleFactor="0.1" upper="10.0" weight="5.0"/>
+
+    <logger id="tracelog" spec="Logger" fileName="$(filebase).log" logEvery="30000" model="@posterior" sanitiseHeaders="true" sort="smart">
+        <log idref="posterior"/>
+        <log idref="likelihood"/>
+        <log idref="prior"/>
+        <log idref="treeLikelihood.sample_200"/>
+        <log id="TreeHeight.t:sample_200" spec="beast.evolution.tree.TreeHeightLogger" tree="@Tree.t:sample_200"/>
+        <log idref="rateIndicator.s:location"/>
+        <log idref="relativeGeoRates.s:location"/>
+        <log idref="traitClockRate.c:location"/>
+        <log id="geoSubstModelLogger.s:location" spec="SVSGeneralSubstitutionModelLogger" dataType="@traitDataType.location" model="@svs.s:location"/>
+        <log idref="clockRate.c:sample_200"/>
+        <log idref="gammaShape.s:sample_200"/>
+        <log idref="freqParameter.s:sample_200"/>
+        <log idref="rateAC.s:sample_200"/>
+        <log idref="rateAG.s:sample_200"/>
+        <log idref="rateAT.s:sample_200"/>
+        <log idref="rateCG.s:sample_200"/>
+        <log idref="rateGT.s:sample_200"/>
+        <log idref="BICEPS.t:sample_200"/>
+        <log idref="BICEPSPopSize.t:sample_200"/>
+    </logger>
+
+    <logger id="screenlog" spec="Logger" logEvery="1000000">
+        <log idref="posterior"/>
+        <log idref="likelihood"/>
+        <log idref="prior"/>
+    </logger>
+
+    <logger id="treelog.t:sample_200" spec="Logger" fileName="$(filebase)$(tree).trees" logEvery="30000" mode="tree">
+        <log id="TreeWithMetaDataLogger.t:sample_200" spec="beast.evolution.tree.TreeWithMetaDataLogger" tree="@Tree.t:sample_200"/>
+    </logger>
+
+    <logger id="treeWithTraitLogger.location" spec="Logger" fileName="$(filebase)$(tree)_location.trees" logEvery="30000" mode="tree">
+        <log id="TreeWithTraitLogger.0" spec="beast.evolution.tree.TreeWithTraitLogger" tree="@Tree.t:sample_200">
+            <metadata idref="posterior"/>
+            <metadata idref="traitedtreeLikelihood.location"/>
+        </log>
+    </logger>
+
+    <operatorschedule id="OperatorSchedule" spec="OperatorSchedule"/>
+
+</run>
+
+</beast>
