@@ -1,6 +1,6 @@
 # Phylo_SARSCOV2_Peru
 
-This repository describes the procedures to perform the Phylodynamic analysis of SARS-CoV-2 genomes in Peru using Bayesian Phylogenetics from the article published in .... ()
+This repository describes the procedures to perform the Phylodynamic analysis of SARS-CoV-2 genomes in Peru using Bayesian Phylogenetics from the article "Phylodynamic of SARS-CoV-2 during the second wave of COVID-19 in Peru" published in Nature Communications (10.1038/s41467-023-39216-8)
 
 The Data Files generated during this study are available in the folder "Files" of this repository
 
